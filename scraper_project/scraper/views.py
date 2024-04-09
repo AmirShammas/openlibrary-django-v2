@@ -3,7 +3,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 from django.views.generic import FormView, TemplateView
 from asgiref.sync import sync_to_async
-
+from .constants import SEARCH_SUBJECT, SEARCH_PAGE_COUNT, SEARCH_URL
 from .handler import ScraperHandler
 from .forms import SearchForm
 from .models import Book, Author
@@ -20,7 +20,7 @@ class ScraperView(FormView):
             return await response.text()
 
     async def scrape_page(self, search_subject, page_number):
-        url = f"https://openlibrary.org/search?q={search_subject}&page={page_number}"
+        url = SEARCH_URL.format(search_subject=search_subject, page_number=page_number)
         async with aiohttp.ClientSession() as session:
             html = await self.fetch_page(session, url)
             soup = BeautifulSoup(html, "html.parser")
@@ -43,8 +43,8 @@ class ScraperView(FormView):
         print("Done!")
 
     def form_valid(self, form):
-        search_subject = form.cleaned_data['search_subject'] or 'music'
-        search_page_count = form.cleaned_data['search_page_count'] or 1
+        search_subject = form.cleaned_data['search_subject'] or SEARCH_SUBJECT
+        search_page_count = form.cleaned_data['search_page_count'] or SEARCH_PAGE_COUNT
         asyncio.run(self.scrape_pages(search_subject, search_page_count))
         return super().form_valid(form)
 
