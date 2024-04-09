@@ -6,13 +6,17 @@
 
     <ul>
         {% for book in books %}
-            <li>ID => {{ book.id }}
+            <li>BOOK_ID => {{ book.id }}
                 <br/> 
-                TITLE => {{ book.title }}
+                BOOK_TITLE => {{ book.title }}
                 <br/>
-                URL => {{ book.url }}
+                BOOK_URL => {{ book.url }}
                 <br/>
-                COVER => {{ book.cover }}
+                BOOK_COVER => {{ book.cover }}
+                <br/>
+                AUTHOR_NAME => {{ book.author.name }}
+                <br/>
+                AUTHOR_URL => {{ book.author.url }}
             </li>
             <hr/>
         {% endfor %}

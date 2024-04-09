@@ -28,11 +28,9 @@ class ScraperView(FormView):
             authors_names, authors_urls = ScraperHandler.get_book_author(soup)
             book_covers = ScraperHandler.get_book_cover(soup)
 
-            for title, url, cover in zip(book_titles, book_urls, book_covers):
-                book = await sync_to_async(Book.objects.create)(title=title, url=url, cover=cover)
-                for author_name, author_url in zip(authors_names, authors_urls):
-                    author, _ = await sync_to_async(Author.objects.get_or_create)(name=author_name, url=author_url)
-                    await sync_to_async(author.books.add)(book)
+            for title, url, cover, author_name, author_url in zip(book_titles, book_urls, book_covers, authors_names, authors_urls):
+                author, _ = await sync_to_async(Author.objects.get_or_create)(name=author_name, url=author_url)
+                book = await sync_to_async(Book.objects.create)(title=title, url=url, cover=cover, author=author)
 
     async def scrape_pages(self, search_subject, search_page_count):
         tasks = []
@@ -52,15 +50,8 @@ class ScraperView(FormView):
 
 
 class BooksView(TemplateView):
-    # template_name = 'books.html'
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['books'] = Book.objects.all()
-    #     return context
-
     template_name = 'books.html'
-    paginate_by = 5  # Number of books to display per page
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
