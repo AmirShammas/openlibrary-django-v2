@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Scraped Books</h1>
+
+    <ul>
+        {% for book in books %}
+            <li>ID => {{ book.id }}
+                <br/> 
+                TITLE => {{ book.title }}
+                <br/>
+                URL => {{ book.url }}
+                <br/>
+                COVER => {{ book.cover }}
+            </li>
+            <hr/>
+        {% endfor %}
+    </ul>
+
+    {% if books.has_other_pages %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if books.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ books.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current-page">
+                    Page {{ books.number }} of {{ books.paginator.num_pages }}.
+                </span>
+
+                {% if books.has_next %}
+                    <a href="?page={{ books.next_page_number }}">next</a>
+                    <a href="?page={{ books.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+{% endblock content %}
